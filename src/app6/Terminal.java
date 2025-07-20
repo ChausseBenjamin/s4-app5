@@ -7,11 +7,30 @@ package app6;
  */
 public class Terminal {
 
+  /**
+   * Contenue / valeur de l'unité lexical.
+   * Un lexeme c'est la chaine de charactères de l'Unité lexicale
+   */
+  String lexeme = "";
 
-  // Constantes et attributs
-  //  ....
-  String chaine = "";
-  boolean isNumber = false;
+  /**
+   * Indique le type de l'unité lexical.
+   * Operateur / nombre / etc.
+   */
+  TypeUniteLexicale type = TypeUniteLexicale.invalid;
+
+  /**
+   * Dit si l'unité lexicale à été créé correctement.
+   * Si le lexeme ne fait pas partie de l'alphabet, ceci est raised.
+   * Après, faut allé voir le contenue du message.
+   */
+  boolean hasError = false;
+
+  /**
+   * Indique pourquoi l'unité lexical n'est pas valide.
+   * Par défaut c'est une string vide.
+   */
+  String errorMessage = "";
 
   public boolean isNumeric() {
     try {
@@ -20,14 +39,6 @@ public class Terminal {
     } catch(NumberFormatException e){
       return false;
     }
-  }
-
-  public boolean isValidLetter() {
-    return chaine.contentEquals("E") || chaine.contentEquals("T") || chaine.contentEquals("a");
-  }
-
-  public boolean isValidOperator() {
-    return chaine.contentEquals("+");
   }
 
 
