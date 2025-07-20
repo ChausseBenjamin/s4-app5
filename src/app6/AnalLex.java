@@ -48,7 +48,6 @@ public class AnalLex {
 
     int executionTracker = 0;
     while (Automaton()) {
-      System.out.println();
       executionTracker++;
       if (executionTracker > 100) {
         ErreurLex("Too many expressions OR your program sucks");
@@ -67,7 +66,7 @@ public class AnalLex {
 
     char currentCharacter = expression.charAt(charPosition);
 
-    System.out.print("Current char: " + currentCharacter + " state: " + state + " char pos: " + charPosition);
+    System.out.println("Current char: " + currentCharacter + " state: " + state + " char pos: " + charPosition);
 
     if (!Alphabet.isInAlphabet(currentCharacter)) {
       ErreurLex("Invalid character: " + currentCharacter);
@@ -119,6 +118,21 @@ public class AnalLex {
             return false;
           }
           return true;
+        }
+
+        if (Alphabet.isIdentifier(currentCharacter)) {
+          if (Character.isLowerCase(currentCharacter)) {
+            ErreurLex("Identifiers cannot start with lowercase character. You used: '" + currentCharacter + "'");
+            return false;
+          }
+
+          if (currentCharacter == '_') {
+            ErreurLex("Identifiers cannot start with an underscore.");
+            return false;
+          }
+
+          ErreurLex("Invalid starting character to an identifier: '" + currentCharacter + "'");
+          return false;
         }
 
         ErreurLex("Engineering skill issue, reached the end of case 0");
@@ -201,12 +215,10 @@ public class AnalLex {
 
   private void AddToLexeme(char toAdd) {
     currentLexeme = currentLexeme + toAdd;
-    System.out.print(" lexeme: " + currentLexeme);
     charPosition++;
   }
 
   private void CreateLexicalUnit(TypeUniteLexicale type) {
-    System.out.print("\tCreating a new lexical unit");
     Terminal createdUnit = new Terminal(currentLexeme, type);
     terminalArray.add(createdUnit);
     currentLexeme = "";
@@ -215,7 +227,7 @@ public class AnalLex {
   private boolean ReachedTheEnd() {
     boolean reached = charPosition == expression.length();
     if (reached) {
-      System.out.print("\tReached the end of expression");
+      System.out.println("Reached the end of expression");
     }
     return reached;
   }

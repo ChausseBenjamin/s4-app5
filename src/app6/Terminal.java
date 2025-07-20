@@ -39,7 +39,7 @@ public class Terminal {
   }
 
   public String toString() {
-    return "lexeme:\t" + lexeme + "\t type:\t" + type;
+    return "type:\t" + type + "\tlexeme:\t" + lexeme;
   }
 
 }
