@@ -10,7 +10,7 @@ public class FeuilleAST extends ElemAST {
     /**Constructeur pour l'initialisation d'attribut(s)
      */
     public FeuilleAST(String lexicalUnit) {  // avec arguments
-        value = new Terminal(lexicalUnit);
+        //value = new Terminal(lexicalUnit);
     }
 
 

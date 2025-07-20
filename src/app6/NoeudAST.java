@@ -16,7 +16,7 @@ public class NoeudAST extends ElemAST {
   public NoeudAST(String input, ElemAST left, ElemAST right ) { // avec arguments
     rightElement = right;
     leftElement = left;
-    value = new Terminal(input);
+    //value = new Terminal(input);
   }
 
  

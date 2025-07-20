@@ -46,6 +46,7 @@ public class DescenteRecursive {
   // ...
   // ...
   public ElemAST E(int lexicalUnitIndex) {
+    /*
     String currentLexicalUnit = lexicalUnits[lexicalUnitIndex];
     String nextLexicalUnit = null;
     Terminal currentTerminal = new Terminal(currentLexicalUnit);
@@ -74,6 +75,8 @@ public class DescenteRecursive {
     }
 
     return elementGauche;
+    */
+    return new FeuilleAST("");
   }
 
   public ElemAST T(int lexicalUnitIndex) {

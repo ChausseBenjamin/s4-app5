@@ -12,6 +12,9 @@ public class AnalLex {
   //  ...
   static int state = 0;
   String expression = "";
+  String currentLexeme = "";
+  int charPosition = 0;
+
   boolean isWrong = false;
   ArrayList<Terminal> terminalArray = new ArrayList<Terminal>();
 
@@ -28,11 +31,193 @@ public class AnalLex {
     // Remove all whitespaces from the string.
     expression = expression.replaceAll("\\s+","");
 
-    for (int index = 0; index < expression.length(); index++) {
-      char character = expression.charAt(index);
-      Terminal newTerminal = new Terminal(String.valueOf(character));
-      terminalArray.add(newTerminal);
+    System.out.println("Cleaned expression: " + expression);
+
+    Analyze();
+  }
+
+  /**
+   * Méthode qui performe l'automate à états finis.
+   * Créé le tableau de Terminal.
+   */
+  public void Analyze() {
+    if (expression.isEmpty()) {
+      ErreurLex("Fichier vide");
+      return;
     }
+
+    int executionTracker = 0;
+    while (Automaton()) {
+      System.out.println();
+      executionTracker++;
+      if (executionTracker > 100) {
+        ErreurLex("Too many expressions OR your program sucks");
+        return;
+      }
+    }
+    System.out.println();
+  }
+
+  /**
+   * Machine à état d'analyze lexical.
+   * Doit être executé jusqu'à ce que ça return false.
+   * @return false si c'est terminé, true si y'en reste à faire.
+   */
+  private boolean Automaton() {
+
+    char currentCharacter = expression.charAt(charPosition);
+
+    System.out.print("Current char: " + currentCharacter + " state: " + state + " char pos: " + charPosition);
+
+    if (!Alphabet.isInAlphabet(currentCharacter)) {
+      ErreurLex("Invalid character: " + currentCharacter);
+      return false;
+    }
+
+    switch (state) {
+      // État initial.
+      case 0:
+        // On commence à lire une variable
+        if (Alphabet.isIdentifierStart(currentCharacter)) {
+          state = 5;
+          AddToLexeme(currentCharacter);
+          if (ReachedTheEnd()) {
+            CreateLexicalUnit(TypeUniteLexicale.identifier);
+            return false;
+          }
+          return true;
+        }
+
+        // On commence à lire un nombre
+        if (Alphabet.isLiteral(currentCharacter)) {
+          state = 3;
+          AddToLexeme(currentCharacter);
+          if (ReachedTheEnd()) {
+            CreateLexicalUnit(TypeUniteLexicale.literal);
+            return false;
+          }
+          return true;
+        }
+
+        // Unité lexical créé tout de suite au lieu de perdre du temps dans l'état 2 d'écriture.
+        if (Alphabet.isOperator(currentCharacter)) {
+          state = 0;
+          AddToLexeme(currentCharacter);
+          CreateLexicalUnit(TypeUniteLexicale.operator);
+          if (ReachedTheEnd()) {
+            return false;
+          }
+          return true;
+        }
+
+        // Créé tout de suite au lieu d'avoir un état 1 d'écriture d'unité lexical.
+        if (Alphabet.isDelimiter(currentCharacter)) {
+          state = 0;
+          AddToLexeme(currentCharacter);
+          CreateLexicalUnit(TypeUniteLexicale.delimiter);
+          if (ReachedTheEnd()) {
+            return false;
+          }
+          return true;
+        }
+
+        ErreurLex("Engineering skill issue, reached the end of case 0");
+        return false;
+
+      // Lecture d'un nombre
+      case 3:
+        // Le nombre est pas encore terminé
+        if (Alphabet.isLiteral(currentCharacter)) {
+          state = 3;
+          AddToLexeme(currentCharacter);
+
+          if (ReachedTheEnd()) {
+            CreateLexicalUnit(TypeUniteLexicale.literal);
+            return false;
+          }
+          return true;
+        }
+
+        // Pas un nombre! Donc c'est la fin du lexeme et on peut recommencer.
+        CreateLexicalUnit(TypeUniteLexicale.literal);
+        state = 0;
+        return true;
+
+      // Lecture d'un identificateur
+      case 5:
+        if (currentCharacter == '_') {
+          state = 7;
+          AddToLexeme(currentCharacter);
+          if (ReachedTheEnd()) {
+            ErreurLex("Identificator cannot end with '_'");
+            return false;
+          }
+          return true;
+        }
+
+        if (Alphabet.isIdentifier(currentCharacter)) {
+          state = 5;
+          AddToLexeme(currentCharacter);
+          if (ReachedTheEnd()) {
+            CreateLexicalUnit(TypeUniteLexicale.identifier);
+            return false;
+          }
+          return true;
+        }
+
+        // Fin du lexeme! On retourne à l'état 0 pour qu'il gère le charactère actuel
+        CreateLexicalUnit(TypeUniteLexicale.identifier);
+        state = 0;
+        return true;
+
+      // Vérification d'un identificateur avec un underscore dedans.
+      case 7:
+        if (currentCharacter == '_') {
+          ErreurLex("Identificator cannot have 2 consecutive underscores.");
+          return false;
+        }
+
+        // Le underscore à été utilisé correctement.
+        if (Alphabet.isIdentifier(currentCharacter)) {
+          state = 5;
+          AddToLexeme(currentCharacter);
+          if (ReachedTheEnd()) {
+            CreateLexicalUnit(TypeUniteLexicale.identifier);
+            return false;
+          }
+          return true;
+        }
+
+        // L'identificateur termine par un underscore! C'est pas bon!
+        CreateLexicalUnit(TypeUniteLexicale.identifier);
+        state = 0;
+        ErreurLex("Identificator cannot end with an underscore");
+        return false;
+    }
+
+    ErreurLex("Skill issue: Reached below the case statement");
+    return false;
+  }
+
+  private void AddToLexeme(char toAdd) {
+    currentLexeme = currentLexeme + toAdd;
+    System.out.print(" lexeme: " + currentLexeme);
+    charPosition++;
+  }
+
+  private void CreateLexicalUnit(TypeUniteLexicale type) {
+    System.out.print("\tCreating a new lexical unit");
+    Terminal createdUnit = new Terminal(currentLexeme, type);
+    terminalArray.add(createdUnit);
+    currentLexeme = "";
+  }
+
+  private boolean ReachedTheEnd() {
+    boolean reached = charPosition == expression.length();
+    if (reached) {
+      System.out.print("\tReached the end of expression");
+    }
+    return reached;
   }
 
 
@@ -58,7 +243,7 @@ public class AnalLex {
   /** ErreurLex() envoie un message d'erreur lexicale
   */
   public void ErreurLex(String s) {	
-     System.out.println("ERROR. Character = " + s);
+    System.out.println("LEX ERROR: " + s);
     isWrong = true;
   }
 
@@ -82,50 +267,25 @@ public class AnalLex {
     Reader r = new Reader(args[0]);
     System.out.println("Contenue de l'expression = " + r.toString());
 
-    if(r.toString().length() == 0) {
-      System.out.println("\t expression vide!");
+    System.out.println("Roulement de l'analyseur...");
+    AnalLex lexical = new AnalLex(r.toString()); // Creation de l'analyseur lexical
+
+    if(lexical.isWrong) {
+      System.out.println("\tAn error was detected. The contents cannot be used.");
     } else {
-      AnalLex lexical = new AnalLex(r.toString()); // Creation de l'analyseur lexical
-
-      // Execution de l'analyseur lexical
-      Terminal t = null;
-      while(lexical.resteTerminal()) {
-        t = lexical.prochainTerminal();
-        switch (state) {
-
-          case 0:
-            if (t.chaine.contentEquals("+")) {
-              toWrite += t.chaine + "\n";
-              lexical.ErreurLex("Cannot start with an operator");
-              end(args[1], toWrite);
-              return;
-            } else if (t.isNumber) {
-              toWrite += t.chaine;
-              state = 1;
-            } else {
-              lexical.ErreurLex("Unknown character: " + t.chaine);
-              end(args[1], toWrite);
-              return;
-            }
-            break;
-
-          case 1:
-            if (t.isNumber) {
-              toWrite += t.chaine;
-            } else if (t.chaine.contentEquals("+")) {
-              toWrite += "\n" + t.chaine + "\n";
-              state = 0;
-            } else {
-              lexical.ErreurLex("Unknown character: " + t.chaine);
-              end(args[1], toWrite);
-              return;
-            }
-            break;
-        }
-      }
-      System.out.println(toWrite); 	// Ecriture de toWrite sur la console
+      System.out.println("\tNo lexical errors detected.");
     }
-    System.out.println("Fin d'analyse lexicale");
+
+    System.out.println("Printing the contents of the lexical units:\n\n");
+
+    // Execution de l'analyseur lexical
+    Terminal t = null;
+    while(lexical.resteTerminal()) {
+      t = lexical.prochainTerminal();
+      toWrite += t.toString();
+      System.out.println(t.toString());
+    }
+    System.out.println("\nFin d'analyse lexicale");
     end(args[1], toWrite);
   }
 }

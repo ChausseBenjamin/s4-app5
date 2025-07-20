@@ -6,7 +6,7 @@ public class Main {
         String[] fakeArgs = {};
         System.out.println("Start of program");
         System.out.println("Running...");
-        DescenteRecursive.main(fakeArgs);
+        AnalLex.main(fakeArgs);
         System.out.println("Done.");
     }
 }

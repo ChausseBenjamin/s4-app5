@@ -22,7 +22,7 @@ public class Terminal {
 
   public boolean isNumeric() {
     try {
-      Double.parseDouble(chaine);
+      Double.parseDouble(lexeme);
       return true;
     } catch(NumberFormatException e){
       return false;
