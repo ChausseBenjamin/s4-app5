@@ -19,18 +19,6 @@ public class Terminal {
    */
   TypeUniteLexicale type = TypeUniteLexicale.invalid;
 
-  /**
-   * Dit si l'unité lexicale à été créé correctement.
-   * Si le lexeme ne fait pas partie de l'alphabet, ceci est raised.
-   * Après, faut allé voir le contenue du message.
-   */
-  boolean hasError = false;
-
-  /**
-   * Indique pourquoi l'unité lexical n'est pas valide.
-   * Par défaut c'est une string vide.
-   */
-  String errorMessage = "";
 
   public boolean isNumeric() {
     try {
@@ -45,9 +33,9 @@ public class Terminal {
   /** Un ou deux constructeurs (ou plus, si vous voulez)
    *  pour l'initalisation d'attributs
    */
-  public Terminal( String unit ) {   // arguments possibles
-     chaine = unit;
-     isNumber = isNumeric();
+  public Terminal( String unit, TypeUniteLexicale typeUniteLexicale ) {   // arguments possibles
+     lexeme = unit;
+     type = typeUniteLexicale;
   }
 
 }
