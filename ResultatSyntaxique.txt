@@ -1,0 +1,2 @@
+Lecture de l'AST trouve : not done
+Evaluation de l'AST trouve : -69
