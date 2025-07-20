@@ -38,4 +38,8 @@ public class Terminal {
      type = typeUniteLexicale;
   }
 
+  public String toString() {
+    return "lexeme:\t" + lexeme + "\t type:\t" + type;
+  }
+
 }
