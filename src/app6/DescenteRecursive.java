@@ -1,7 +1,5 @@
 package app6;
 
-/** @author Ahmed Khoumsi */
-
 import java.util.ArrayList;
 
 /** Cette classe effectue l'analyse syntaxique
@@ -43,60 +41,20 @@ public class DescenteRecursive {
 
 
   // Methode pour chaque symbole non-terminal de la grammaire retenue
-  // ...
-  // ...
   public ElemAST E(int lexicalUnitIndex) {
-    /*
-    String currentLexicalUnit = lexicalUnits[lexicalUnitIndex];
-    String nextLexicalUnit = null;
-    Terminal currentTerminal = new Terminal(currentLexicalUnit);
-    Terminal nextTerminal = null;
-
-    // E devient T + E OU T. Donc l'élement de gauche reste T
-    ElemAST elementGauche = null;
-    ElemAST elementDroite = null;
-
-    // Élément gauche est toujours T
-    elementGauche = T(lexicalUnitIndex);
-
-    // Y'a tu un plus qui s'en vient?
-    if (lexicalUnitIndex == lexicalUnits.length - 1) {
-      // On est a la fin de l'entree.
-    } else {
-      nextLexicalUnit = lexicalUnits[lexicalUnitIndex + 1];
-      nextTerminal = new Terminal(nextLexicalUnit);
-
-      if (nextTerminal.isValidOperator()) {
-        // Then we have an E -> T + E !
-        elementDroite = E(lexicalUnitIndex+2);
-
-        return new NoeudAST(nextLexicalUnit, elementGauche, elementDroite);
-      }
-    }
-
-    return elementGauche;
-    */
-    return new FeuilleAST("");
   }
 
   public ElemAST T(int lexicalUnitIndex) {
-    // T -> a
-    return a(lexicalUnitIndex);
   }
 
-  public ElemAST a(int lexicalUnitIndex) {
-    String currentLexicalUnit = lexicalUnits[lexicalUnitIndex];
-    return new FeuilleAST(currentLexicalUnit);
+  public ElemAST P(int lexicalUnitIndex) {
   }
 
 
   /** ErreurSynt() envoie un message d'erreur syntaxique
   */
-  public void ErreurSynt(String s)
-  {
-      //
+  public void ErreurSynt(String s) {
   }
-
 
   //Methode principale a lancer pour tester l'analyseur syntaxique 
   public static void main(String[] args) {
@@ -129,3 +87,14 @@ public class DescenteRecursive {
 
 }
 
+public enum ExprType {
+  E, // -> T() [ (+|-) E() ]
+  T, // -> P() [ (*|/) T() ]
+  P, // -> opé | var | `(` E() `)`
+}
+
+public class GrammarExpr {
+  public GrammarExpr lhs; //
+  public String operator; // lexeme
+  public GrammarExpr rhs;
+}

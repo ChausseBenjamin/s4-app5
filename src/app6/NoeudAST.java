@@ -7,15 +7,15 @@ package app6;
 public class NoeudAST extends ElemAST {
 
   // Attributs
-  ElemAST rightElement;
-  ElemAST leftElement;
-  Terminal value;
+  ElemAST left;
+  ElemAST right;
+  Terminal pivot;
 
   /** Constructeur pour l'initialisation d'attributs
    */
   public NoeudAST(String input, ElemAST left, ElemAST right ) { // avec arguments
-    rightElement = right;
-    leftElement = left;
+    right = right;
+    left = left;
     //value = new Terminal(input);
   }
 
