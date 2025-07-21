@@ -1,0 +1,36 @@
+\ProvidesPackage{tools}[
+Sherbrooke Engineering Toolbox by Benjamin Chausse
+]
+
+\newcommand{\todo}[1]{\begin{color}{Red}\textbf{TODO:} #1\end{color}}
+\newcommand{\note}[1]{\begin{color}{Orange}\textbf{NOTE:} #1\end{color}}
+\newcommand{\fixme}[1]{\begin{color}{Fuchsia}\textbf{FIXME:} #1\end{color}}
+\newcommand{\question}[1]{\begin{color}{ForestGreen}\textbf{QUESTION:} #1\end{color}}
+
+\newcommand{\quicktab}[4]{
+  \begin{table}[H]
+    \centering
+    \caption{#1}
+    \label{tab:#2}
+    \begin{tabular}{#3}
+      #4
+    \end{tabular}
+  \end{table}
+}
+
+\newcommand{\quickfig}[4]{
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=#3\textwidth]{#4}
+  \caption{#1}
+  \label{fig:#2}
+\end{figure}
+}
+
+% Checkboxes
+\setlength{\fboxsep}{1pt}
+\newcommand{\cbox}{\fbox{\phantom{\ding{51}}}}
+\newcommand{\cboxtick}{\fbox{\ding{51}}}%
+% self-incrementing Test-ID
+\newcounter{tid}
+\newcommand{\tid}{\stepcounter{tid}\thetid}
