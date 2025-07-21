@@ -41,13 +41,33 @@ public class DescenteRecursive {
 
 
   // Methode pour chaque symbole non-terminal de la grammaire retenue
-  public ElemAST E(int lexicalUnitIndex) {
+  public ElemAST E(ArrayList<Terminal> parseData) {
+    RecDescentResp resp = T(new RecDescentResp(parseData));
+    ElemAST elemT = resp.elem;
+    ArrayList<Terminal> remainder = resp.remainder;
+
+    // Reached the end of parsing return the end
+    if (remainder.isEmpty()) {
+     return elemT;
+    }
+
+    Terminal pivot = remainder.get(0);
+    ArrayList<Terminal> right = new ArrayList<>(remainder.subList(1, remainder.size()));
+    return switch (pivot.lexeme) {
+          case "+", "-" -> new NoeudAST(pivot, elemT, E(right));
+          default -> {
+              System.out.println("Grammar Analysis expected a '+'/'-' pivot to the right of your expression");
+              yield null;
+          }
+      };
   }
 
-  public ElemAST T(int lexicalUnitIndex) {
+  public RecDescentResp T(RecDescentResp parseData) {
+    // TODO
   }
 
-  public ElemAST P(int lexicalUnitIndex) {
+  public RecDescentResp P(RecDescentResp parseData) {
+    // TODO
   }
 
 
@@ -87,14 +107,11 @@ public class DescenteRecursive {
 
 }
 
-public enum ExprType {
-  E, // -> T() [ (+|-) E() ]
-  T, // -> P() [ (*|/) T() ]
-  P, // -> opé | var | `(` E() `)`
-}
-
-public class GrammarExpr {
-  public GrammarExpr lhs; //
-  public String operator; // lexeme
-  public GrammarExpr rhs;
+public class RecDescentResp {
+  public ElemAST elem;
+  public ArrayList<Terminal> remainder;
+  RecDescentResp(ArrayList<Terminal> EData) {
+    this.elem = null;
+    this.remainder = EData;
+  }
 }

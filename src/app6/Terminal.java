@@ -11,7 +11,7 @@ public class Terminal {
    * Contenue / valeur de l'unité lexical.
    * Un lexeme c'est la chaine de charactères de l'Unité lexicale
    */
-  String lexeme = "";
+  public String lexeme = "";
 
   /**
    * Indique le type de l'unité lexical.
