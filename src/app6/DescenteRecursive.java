@@ -34,40 +34,109 @@ public class DescenteRecursive {
   */
   public ElemAST AnalSynt( ) {
     System.out.println("Analysing... Calling E...");
-    ElemAST result =  E(0);
+    RecDescentResp result = F();
+    if (!result.remainder.isEmpty()) {
+      System.out.printf("Failure to complete parse. Unable to parse this remaining expression %s\n", result.remainder);
+    }
     System.out.println("Analysis over");
-    return result;
+    return result.elem;
   }
 
-
   // Methode pour chaque symbole non-terminal de la grammaire retenue
-  public ElemAST E(ArrayList<Terminal> parseData) {
-    RecDescentResp resp = T(new RecDescentResp(parseData));
+  public RecDescentResp E(ArrayList<Terminal> parseData) {
+    RecDescentResp resp = T(parseData);
     ElemAST elemT = resp.elem;
     ArrayList<Terminal> remainder = resp.remainder;
 
-    // Reached the end of parsing return the end
+    // Reached the end of parsing (no rhs)
     if (remainder.isEmpty()) {
-     return elemT;
+     return resp;
     }
 
     Terminal pivot = remainder.get(0);
-    ArrayList<Terminal> right = new ArrayList<>(remainder.subList(1, remainder.size()));
-    return switch (pivot.lexeme) {
-          case "+", "-" -> new NoeudAST(pivot, elemT, E(right));
-          default -> {
-              System.out.println("Grammar Analysis expected a '+'/'-' pivot to the right of your expression");
-              yield null;
-          }
-      };
+    String pivotStr = pivot.lexeme;
+    switch (pivotStr) {
+      case "+", "-":
+        RecDescentResp right = E(new ArrayList<>(remainder.subList(1, remainder.size())));
+        return new RecDescentResp(
+          right.remainder,
+          new NoeudAST(pivot, elemT, right.elem)
+        );
+
+      default:
+        System.out.printf("Grammar Analysis expected a '+' or '-' pivot to the right of your expression, found %s\n", pivotStr);
+        return null;
+    }
   }
 
-  public RecDescentResp T(RecDescentResp parseData) {
-    // TODO
+  public  RecDescentResp T(ArrayList<Terminal> parseData) {
+    RecDescentResp resp = P(parseData);
+    ElemAST elemP = resp.elem;
+    ArrayList<Terminal> remainder = resp.remainder;
+
+    // Reach the end of the parsing (no rhs)
+    if (remainder.isEmpty()) {
+      return resp;
+    }
+
+    Terminal pivot = remainder.get(0);
+    String pivotStr = pivot.lexeme;
+    switch (pivotStr) {
+      case "*","/":
+        RecDescentResp right = T(new ArrayList<>(remainder.subList(1, remainder.size())));
+        return new RecDescentResp(
+          right.remainder,
+          new NoeudAST(pivot,elemP,right.elem)
+        );
+      default:
+        System.out.printf("Grammar Analysis expected a '*' or '/' pivot to the right of your expression, found %s\n", pivotStr);
+        return null;
+    }
   }
 
-  public RecDescentResp P(RecDescentResp parseData) {
-    // TODO
+  public RecDescentResp P(ArrayList<Terminal> parseData) {
+    if (parseData.isEmpty()) {
+      System.out.println("Grammar Analysis expected a delimiter, literal or identifier but found nothing");
+      return null;
+    };
+
+    Terminal pivot = parseData.get(0); // In this case the "pivot" is either our leaf or an opening "("
+    String pivotStr = pivot.lexeme;
+    ArrayList<Terminal> remainder = new ArrayList<>(parseData.subList(1, parseData.size()));
+
+    switch (pivot.type) {
+      case delimiter:
+        // Ensure we start a delim block with an opening paren
+        if (pivotStr != "(") {
+          System.out.printf("Grammar Analysis expected a '(' delimiter next, found %s\n", pivotStr);
+        }
+        RecDescentResp inner = E(remainder);
+        if (inner.remainder.isEmpty()) {
+          System.out.println("Grammar Analysis expected a ')' delimiter next but found nothing\n");
+        }
+        if ( inner.remainder.get(0).lexeme != ")") {
+          System.out.printf("Grammar Analysis expected a ')' delimiter next, found %s\n", pivotStr);
+        }
+        return new RecDescentResp(
+          new ArrayList<>(inner.remainder.subList(1,inner.remainder.size())),
+          inner.elem
+        );
+
+
+      case identifier,literal:
+        return new RecDescentResp(
+          remainder,
+          new FeuilleAST(pivot)
+        );
+
+
+      default:
+        System.out.printf("Grammar Analysis found an unexpected terminal: %s\n", pivotStr);
+        return null;
+      }
+
+    }
+
   }
 
 
@@ -110,8 +179,13 @@ public class DescenteRecursive {
 public class RecDescentResp {
   public ElemAST elem;
   public ArrayList<Terminal> remainder;
+  // E() doesn't have a remainder as it's the root node
   RecDescentResp(ArrayList<Terminal> EData) {
     this.elem = null;
     this.remainder = EData;
+  }
+  RecDescentResp(ArrayList<Terminal> remainder, ElemAST elem) {
+    this.elem = elem;
+    this.remainder = remainder;
   }
 }
