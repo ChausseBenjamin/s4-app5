@@ -11,45 +11,61 @@ public class FeuilleAST extends ElemAST {
      */
     public FeuilleAST(Terminal lexicalUnit) {  // avec arguments
         value = lexicalUnit;
+
+        if (value.type == TypeUniteLexicale.invalid) {
+            System.out.println("Build Err: Leaf: Instanciated with an invalid lexical unit: " + lexicalUnit.toString());
+        }
     }
 
     /** Evaluation de feuille d'AST
     */
     public int EvalAST( ) {
-        if (value.type == TypeUniteLexicale.identifier) {
-            System.out.println("EVAL ERR: Tried to evaluate an identificator: " + value.lexeme);
-            return 0;
-        }
 
-        if (value.type == TypeUniteLexicale.operator) {
-            System.out.println("EVAL ERR: Operators cannot be a leaf of AST. Critical system error. Char: " + value.lexeme);
-            return 0;
-        }
-
-        if (value.type == TypeUniteLexicale.delimiter) {
-            System.out.println("EVAL ERR: Delimiter cannot be a leaf of AST: " + value.lexeme);
-            return 0;
-        }
-
-        if (value.type == TypeUniteLexicale.literal) {
-            try {
-                int result = Integer.parseInt(value.lexeme);
-                return result;
-            } catch(NumberFormatException e){
-                System.out.println("EVAL ERR: Could not parse literal lexeme to int: " + value.lexeme);
+        switch (value.type) {
+            case invalid:
+                System.out.println("EVAL ERR: Leaf: Lexical unit is invalid: " + value.toString());
                 return 0;
-            }
+
+            case identifier:
+                System.out.println("EVAL ERR: Leaf: Tried to evaluate an identificator: " + value.toString());
+                return 0;
+
+            case operator:
+                System.out.println("EVAL ERR: Leaf: Operators cannot be a leaf of AST. Critical system error: " + value.toString());
+                return 0;
+
+            case delimiter:
+                System.out.println("EVAL ERR: Leaf: Delimiter cannot be a leaf of AST: " + value.toString());
+                return 0;
+
+            case literal:
+                try {
+                    int result = Integer.parseInt(value.lexeme);
+                    return result;
+                } catch(NumberFormatException e){
+                    System.out.println("EVAL ERR: Leaf: Could not parse literal lexeme to int: " + value.toString());
+                    return 0;
+                }
+
+            default:
+                System.out.println("EVAL ERR: Leaf: Implementation error. Switch case defaulted. Fix the code.");
+                return 0;
         }
-
-        System.out.println("EVAL ERR: Skill issue: Unrecognized token: " + value.lexeme);
-        return 0;
     }
-
-
+    
     /** Lecture de chaine de caracteres correspondant a la feuille d'AST
     */
     public String LectAST( ) {
-        return "not done";
+        return LectAST(0);
+    }
+
+    public String LectAST(int depth) {
+        String tabs = "";
+        for (int tabsAmount = 0; tabsAmount < depth; tabsAmount++) {
+            tabs += "\t";
+        }
+
+        return tabs + "F: (" + value.toString() + ")\n";
     }
 
 }

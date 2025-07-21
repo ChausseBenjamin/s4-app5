@@ -2,6 +2,8 @@ package app6;
 
 /** @author Ahmed Khoumsi */
 
+import java.lang.reflect.Type;
+
 /** Classe representant une feuille d'AST
  */
 public class NoeudAST extends ElemAST {
@@ -13,24 +15,69 @@ public class NoeudAST extends ElemAST {
 
   /** Constructeur pour l'initialisation d'attributs
    */
-  public NoeudAST(String input, ElemAST left, ElemAST right ) { // avec arguments
+  public NoeudAST(Terminal input, ElemAST left, ElemAST right ) { // avec arguments
     right = right;
     left = left;
-    //value = new Terminal(input);
+    pivot = input;
+
+    if (pivot.type == TypeUniteLexicale.invalid) {
+      System.out.println("Build Err: Node:  Lexical unit is of type invalid: " + pivot.toString());
+    }
   }
 
  
   /** Evaluation de noeud d'AST
    */
   public int EvalAST( ) {
-     return -69;
+
+    switch (pivot.type) {
+      case operator:
+        switch (pivot.lexeme) {
+          case "+":
+            return left.EvalAST() + right.EvalAST();
+          case "*":
+            return left.EvalAST() * right.EvalAST();
+          case "-":
+            return left.EvalAST() - right.EvalAST();
+          case "/":
+            return left.EvalAST() / right.EvalAST();
+          default:
+            System.out.println("EVAL ERR: Node: Recognized an operator but did not have the tools to perform the evaluation:" + pivot.toString());
+            return 0;
+        }
+
+      case literal:
+        System.out.println("EVAL WARN: Node: You have a literal in the AST as a node... Bruh?: " + pivot.toString());
+        return 0;
+
+      case identifier:
+        System.out.println("EVAL ERR: Node: A node has an identifier. It shouldn't happen and cannot be evaluated.");
+        return 0;
+
+      case delimiter:
+        System.out.println("EVAL ERR: Node: A delimiter was found. The AST should not have delimiters: " + pivot.toString());
+        return 0;
+
+      default:
+        System.out.println("EVAL ERR: Node: Implementation error: Pivot type switch case defaulted. You forgot to change this code.");
+        return 0;
+    }
   }
 
 
   /** Lecture de noeud d'AST
    */
   public String LectAST( ) {
-     return "not done";
+     return LectAST(0);
+  }
+
+  public String LectAST(int depth) {
+    String tabs = "";
+    for (int tabsAmount = 0; tabsAmount < depth; tabsAmount++) {
+      tabs += "\t";
+    }
+
+    return tabs + "N: (" + pivot.toString() + ")\n" + left.LectAST(depth + 1) + right.LectAST(depth + 1);
   }
 
 }

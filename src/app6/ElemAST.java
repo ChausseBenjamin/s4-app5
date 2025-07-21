@@ -23,4 +23,6 @@ public abstract class ElemAST {
     // 
   }
 
+  public abstract String LectAST(int depth);
+
 }
