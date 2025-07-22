@@ -60,12 +60,6 @@ public class FeuilleAST extends ElemAST {
     }
 
     public String LectAST(int depth) {
-        String tabs = "";
-        for (int tabsAmount = 0; tabsAmount < depth; tabsAmount++) {
-            tabs += "\t";
-        }
-
-        return tabs + "F: (" + value.toString() + ")\n";
+        return "{\"nodeType\":\"leaf\",\"type\":\"" + value.type + "\",\"lexeme\":\"" + value.lexeme + "\"}";
     }
-
 }

@@ -1,19 +1,2 @@
-Lecture de l'AST trouve : N: (type:	operator	lexeme:	*)
-	N: (type:	operator	lexeme:	*)
-		N: (type:	operator	lexeme:	/)
-			F: (type:	identifier	lexeme:	Foo)
-			F: (type:	literal	lexeme:	2)
-		N: (type:	operator	lexeme:	-)
-			F: (type:	literal	lexeme:	123)
-			N: (type:	operator	lexeme:	*)
-				F: (type:	literal	lexeme:	122)
-				F: (type:	identifier	lexeme:	Bar)
-	N: (type:	operator	lexeme:	+)
-		F: (type:	identifier	lexeme:	Bro_dude)
-		N: (type:	operator	lexeme:	/)
-			N: (type:	operator	lexeme:	-)
-				F: (type:	literal	lexeme:	8)
-				F: (type:	literal	lexeme:	4)
-			F: (type:	literal	lexeme:	2)
-
+Lecture de l'AST trouve : {"nodeType":"node","type":"operator","lexeme":"*","left":{"nodeType":"node","type":"operator","lexeme":"*","left":{"nodeType":"node","type":"operator","lexeme":"/","left":{"nodeType":"leaf","type":"identifier","lexeme":"Foo"},"right":{"nodeType":"leaf","type":"literal","lexeme":"2"}},"right":{"nodeType":"node","type":"operator","lexeme":"-","left":{"nodeType":"leaf","type":"literal","lexeme":"123"},"right":{"nodeType":"node","type":"operator","lexeme":"*","left":{"nodeType":"leaf","type":"literal","lexeme":"122"},"right":{"nodeType":"leaf","type":"identifier","lexeme":"Bar"}}}},"right":{"nodeType":"node","type":"operator","lexeme":"+","left":{"nodeType":"leaf","type":"identifier","lexeme":"Bro_dude"},"right":{"nodeType":"node","type":"operator","lexeme":"/","left":{"nodeType":"node","type":"operator","lexeme":"-","left":{"nodeType":"leaf","type":"literal","lexeme":"8"},"right":{"nodeType":"leaf","type":"literal","lexeme":"4"}},"right":{"nodeType":"leaf","type":"literal","lexeme":"2"}}}}
 Evaluation de l'AST trouve : 0

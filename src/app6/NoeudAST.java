@@ -71,14 +71,8 @@ public class NoeudAST extends ElemAST {
   }
 
   public String LectAST(int depth) {
-    String tabs = "";
-    for (int tabsAmount = 0; tabsAmount < depth; tabsAmount++) {
-      tabs += "\t";
-    }
-
-    return tabs + "N: (" + pivot.toString() + ")\n" + left.LectAST(depth + 1) + right.LectAST(depth + 1);
+    return "{\"nodeType\":\"node\",\"type\":\"" + pivot.type + "\",\"lexeme\":\"" + pivot.lexeme + "\",\"left\":" + left.LectAST(depth + 1) + ",\"right\":" + right.LectAST(depth + 1) + "}";
   }
-
 }
 
 
