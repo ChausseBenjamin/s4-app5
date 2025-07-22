@@ -9,7 +9,7 @@ public class DescenteRecursive {
   // Attributs
   public AnalLex lexicalAnalyzer;
   ArrayList<Terminal> lexicalUnits;
-
+  private int originalTokenCount;
   /** Constructeur de DescenteRecursive :
       - recoit en argument le nom du fichier contenant l'expression a analyser
       - pour l'initalisation d'attribut(s)
@@ -24,13 +24,19 @@ public class DescenteRecursive {
       // ErreurSynt("Cannot continue further because the parsing failed");
     } else {
       lexicalUnits = lexicalAnalyzer.terminalArray;
-    }
-  }
-/** ErreurSynt() envoie un message d'erreur syntaxique
+      originalTokenCount = lexicalUnits.size();
+    }  }
+/** ErreurSynt() envoie un message d'erreur syntaxique avec contexte
  */
-  public void ErreurSynt(String s) {
+  public void ErreurSynt(String message, ArrayList<Terminal> remainingTokens) throws SyntaxException {
+    throw new SyntaxException(message, remainingTokens, originalTokenCount);
   }
-
+  
+  public void ErreurSynt(String message, String expected, String actual, ArrayList<Terminal> remainingTokens) throws SyntaxException {
+    int position = originalTokenCount - (remainingTokens != null ? remainingTokens.size() : 0);
+    String context = remainingTokens != null ? remainderRawStr(remainingTokens) : "";
+    throw new SyntaxException(message, expected, actual, position, context);
+  }
 //Methode principale a lancer pour tester l'analyseur syntaxique
 public static void main(String[] args) {
   String toWriteLect = "";
@@ -69,18 +75,17 @@ public static void main(String[] args) {
   /** AnalSynt() effectue l'analyse syntaxique et construit l'AST.
     *    Elle retourne une reference sur la racine de l'AST construit
   */
-  public ElemAST AnalSynt() {
+  public ElemAST AnalSynt() throws SyntaxException {
     System.out.println("Analysing... Calling E...");
     RecDescentResp result = E(lexicalUnits);
     if (!util.isNullOrEmpty(result.remainder)) {
-      System.out.printf("Failure to complete parse. Unable to parse this remaining expression %s\n", result.remainder);
+      ErreurSynt("Failed to parse complete expression - unexpected tokens remain", result.remainder);
     }
     System.out.println("Analysis over");
     return result.elem;
   }
-
   // Methode pour chaque symbole non-terminal de la grammaire retenue
-  public RecDescentResp E(ArrayList<Terminal> parseData) {
+  public RecDescentResp E(ArrayList<Terminal> parseData) throws SyntaxException {
     System.out.printf("Analysing... Calling T... Remaining: %s\n", remainderRawStr(parseData));
     RecDescentResp resp = T(parseData);
     ElemAST elemT = resp.elem;
@@ -92,7 +97,11 @@ public static void main(String[] args) {
       String pivotStr = pivot.lexeme;
       
       if (pivotStr.equals("+") || pivotStr.equals("-")) {
-        RecDescentResp right = T(new ArrayList<>(remainder.subList(1, remainder.size())));
+        ArrayList<Terminal> rightTokens = new ArrayList<>(remainder.subList(1, remainder.size()));
+        if (rightTokens.isEmpty()) {
+          ErreurSynt("Expected operand after operator", "number or expression", "end of input", remainder);
+        }
+        RecDescentResp right = T(rightTokens);
         elemT = new NoeudAST(pivot, elemT, right.elem);
         remainder = right.remainder;
       } else {
@@ -102,7 +111,7 @@ public static void main(String[] args) {
 
     return new RecDescentResp(remainder, elemT);
   }
-  public  RecDescentResp T(ArrayList<Terminal> parseData) {
+  public RecDescentResp T(ArrayList<Terminal> parseData) throws SyntaxException {
     System.out.printf("Analysing... Calling P... Remaining: %s\n", remainderRawStr(parseData));
     RecDescentResp resp = P(parseData);
     ElemAST elemP = resp.elem;
@@ -114,8 +123,11 @@ public static void main(String[] args) {
       String pivotStr = pivot.lexeme;
       
       if (pivotStr.equals("*") || pivotStr.equals("/")) {
-        RecDescentResp right = P(new ArrayList<>(remainder.subList(1, remainder.size())));
-        System.out.printf("Analysing... Calling P... Remaining: %s\n", remainderRawStr(right.remainder));
+        ArrayList<Terminal> rightTokens = new ArrayList<>(remainder.subList(1, remainder.size()));
+        if (rightTokens.isEmpty()) {
+          ErreurSynt("Expected operand after operator", "number or expression", "end of input", remainder);
+        }
+        RecDescentResp right = P(rightTokens);        System.out.printf("Analysing... Calling P... Remaining: %s\n", remainderRawStr(right.remainder));
         elemP = new NoeudAST(pivot, elemP, right.elem);
         remainder = right.remainder;
       } else {
@@ -125,11 +137,10 @@ public static void main(String[] args) {
 
     return new RecDescentResp(remainder, elemP);
   }
-  public RecDescentResp P(ArrayList<Terminal> parseData) {
+  public RecDescentResp P(ArrayList<Terminal> parseData) throws SyntaxException {
     // When reaching P(), you MUST be able to release at least 1 literal
     if (util.isNullOrEmpty(parseData)) {
-      System.out.println("Grammar Analysis expected a delimiter, literal or identifier but found nothing");
-      return null;
+      ErreurSynt("Expected expression", "literal, identifier, or '('", "end of input", parseData);
     };
 
     Terminal pivot = parseData.get(0); // In this case the "pivot" is either our leaf or an opening "("
@@ -140,16 +151,16 @@ public static void main(String[] args) {
       case delimiter:
         // Ensure we start a delim block with an opening paren
         if ( !pivotStr.equals("(")) {
-          System.out.printf("Grammar Analysis expected a '(' delimiter next, found %s, Remaining: %s\n", pivotStr, pivot);
+          ErreurSynt("Expected opening parenthesis", "'('", pivotStr, parseData);
         }
         // Parse the inside/inner (we expect there to be a remaining/trailing ')' after that pass)
         System.out.printf("Analysing... Calling E... Remaining: %s\n", remainder);
         RecDescentResp inner = E(remainder);
         if (util.isNullOrEmpty(inner.remainder)) {
-          System.out.printf("Grammar Analysis expected a ')' delimiter next but found nothing. Remaining: %s\n", inner.remainder);
+          ErreurSynt("Expected closing parenthesis", "')'", "end of input", inner.remainder);
         }
         if ( !inner.remainder.get(0).lexeme.equals(")")) {
-          System.out.printf("Grammar Analysis expected a ')' delimiter next, found %s, Remaining: %s\n", pivotStr, inner.remainder);
+          ErreurSynt("Expected closing parenthesis", "')'", inner.remainder.get(0).lexeme, inner.remainder);
         }
         return new RecDescentResp(
           new ArrayList<>(inner.remainder.subList(1,inner.remainder.size())),
@@ -164,12 +175,11 @@ public static void main(String[] args) {
         );
 
       default:
-        System.out.printf("Grammar Analysis found an unexpected terminal: %s\n", pivotStr);
-        return null;
+        ErreurSynt("Unexpected token", "literal, identifier, or '('", pivotStr, parseData);
+        return null; // This will never be reached due to exception
     }
 
   }
-
   public static String remainderRawStr(ArrayList<Terminal> arr) {
     StringBuilder s = new StringBuilder();
     for (Terminal term : arr) {
