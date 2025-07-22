@@ -1,2 +1,19 @@
-Lecture de l'AST trouve : not done
-Evaluation de l'AST trouve : -69
+Lecture de l'AST trouve : N: (type:	operator	lexeme:	*)
+	N: (type:	operator	lexeme:	*)
+		N: (type:	operator	lexeme:	/)
+			F: (type:	identifier	lexeme:	Foo)
+			F: (type:	literal	lexeme:	2)
+		N: (type:	operator	lexeme:	-)
+			F: (type:	literal	lexeme:	123)
+			N: (type:	operator	lexeme:	*)
+				F: (type:	literal	lexeme:	122)
+				F: (type:	identifier	lexeme:	Bar)
+	N: (type:	operator	lexeme:	+)
+		F: (type:	identifier	lexeme:	Bro_dude)
+		N: (type:	operator	lexeme:	/)
+			N: (type:	operator	lexeme:	-)
+				F: (type:	literal	lexeme:	8)
+				F: (type:	literal	lexeme:	4)
+			F: (type:	literal	lexeme:	2)
+
+Evaluation de l'AST trouve : 0

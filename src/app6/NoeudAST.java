@@ -16,9 +16,8 @@ public class NoeudAST extends ElemAST {
   /** Constructeur pour l'initialisation d'attributs
    */
   public NoeudAST(Terminal input, ElemAST left, ElemAST right ) { // avec arguments
-    right = right;
-    left = left;
-    pivot = input;
+    this.right = right;
+    this.left = left;    pivot = input;
 
     if (pivot.type == TypeUniteLexicale.invalid) {
       System.out.println("Build Err: Node:  Lexical unit is of type invalid: " + pivot.toString());

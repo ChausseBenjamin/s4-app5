@@ -1,5 +1,4 @@
 import app6.AnalLex;
-import app6.DescenteRecursive;
 
 public class Main {
     public static void main(String[] args) {
