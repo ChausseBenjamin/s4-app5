@@ -154,7 +154,7 @@ public static void main(String[] args) {
           ErreurSynt("Expected opening parenthesis", "'('", pivotStr, parseData);
         }
         // Parse the inside/inner (we expect there to be a remaining/trailing ')' after that pass)
-        System.out.printf("Analysing... Calling E... Remaining: %s\n", remainder);
+        System.out.printf("Analysing... Calling E... Remaining: %s\n", remainderRawStr(remainder));
         RecDescentResp inner = E(remainder);
         if (util.isNullOrEmpty(inner.remainder)) {
           ErreurSynt("Expected closing parenthesis", "')'", "end of input", inner.remainder);
