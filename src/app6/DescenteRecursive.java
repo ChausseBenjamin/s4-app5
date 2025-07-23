@@ -81,9 +81,12 @@ public static void main(String[] args) {
     if (!util.isNullOrEmpty(result.remainder)) {
       ErreurSynt("Failed to parse complete expression - unexpected tokens remain", result.remainder);
     }
-    System.out.println("Analysis over");
+    System.out.println("Analysis over... Generating Postfix Notation");
+    System.out.println(result.elem.AsPostFix());
+    System.out.println("Postfix Notation Complete");
     return result.elem;
   }
+
   // Methode pour chaque symbole non-terminal de la grammaire retenue
   public RecDescentResp E(ArrayList<Terminal> parseData) throws SyntaxException {
     System.out.printf("Analysing... Calling T... Remaining: %s\n", remainderRawStr(parseData));
@@ -108,9 +111,9 @@ public static void main(String[] args) {
         break;
       }
     }
-
     return new RecDescentResp(remainder, elemT);
   }
+
   public RecDescentResp T(ArrayList<Terminal> parseData) throws SyntaxException {
     System.out.printf("Analysing... Calling P... Remaining: %s\n", remainderRawStr(parseData));
     RecDescentResp resp = P(parseData);

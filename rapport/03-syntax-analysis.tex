@@ -1,0 +1,133 @@
+\section{Conception de l'analyseur syntaxique par la méthode descendante}
+
+\todo{Expliquer le principe de fonctionnement d’un analyseur descendant et d’un analyseur LL} \\
+\todo{Déterminer la catégorie d’analyseurs syntaxiques LL la plus utilisée en pratique} \\
+\todo{Déterminer le type de grammaires pour lesquelles la catégorie déterminée en b est applicable} \\
+\todo{Définir formellement la syntaxe d’expressions arithmétiques, à l’aide d’une grammaire du type} \\
+\todo{erminé en c} \\
+\todo{Illustrer sur des exemples les séquences de dérivations effectuées par un analyseur de la catégorie} \\
+\todo{erminée en b} \\
+\todo{Proposer une classe Java qui permet d’appliquer la méthode de la descente récursive (MDR)} \\
+
+\subsection{Principes de fonctionnements}
+
+\subsubsection{Analyseur descendant}
+
+Un analyseur syntaxique descendant vas construire l'\textit{AST} à partir
+d'un symbole de départ. Il vas dérivé l'entrée soit de gauche à droite ou de
+droite à gauche en appliquant des règles de grammaires. Ces derniers
+permettent de choisir le bon prochain symbole ou combinaison de symboles et
+peut utilisé une méthode qui implémente des "lookup tokens" pour
+déterminer les symboles suivant et être en mesure de choisir la bonne règle
+de production. Il vas essayé les différentes règles de productions jusqu'à ce
+que la chaîne d'entrée soit analysé ou qu'une erreur soit détecté.
+
+\subsection{Analyseur LL}
+
+Le premier L de la méthode LL indique que l'entrée est lu de gauche vers la
+droite. Le deuxième L indique que la séquence de dérivations est fait à
+gauche. Dans l'énoncer de la problématique, on indique d'utilisé LL(1). Le
+nombre en parenthèse est la quantité de "lookup token" que l'implémentation
+peut prendre. Dans le cas de l'implémentation de l'énoncer de la problématique,
+c'est 1. Ça veut dire que pour appliquer les règles de la grammaire, les
+fonctions ne peuvent que lire le caractère actuel et un seul suivant.
+
+La méthode LL est une méthode prédictive. Elle vas essayé d'anticiper qu'elle
+règle utilisé et elle est aussi récursive dans ses appelles de règles de
+production.
+
+L'analyseur vas commencer par la gauche de l'expression et par le symbole de
+départ. Ce dernier vas regarder le caractère suivant et s'il est capable de
+répondre à la règle avec ce dernier, il vas créé un noeud d'arbre avec deux
+symboles, sinon il vas simplement allé au prochain symbole. Plus loins dans
+le document, la grammaire utilisé démontre ce principe.
+
+\subsection{Catégorie LL la plus utilisée en pratique}
+
+La méthode la plus utilisé en pratique est \verb|LL(1)|. Simplement dû à ça
+simplicité d'implémentation, souvent avec une descente récursive comme fait
+pour l'APP. Elle est suffisante pour de nombreux language de programmation
+robuste en syntax.
+
+Des méthodes beaucoup plus compliqué existent pour répondre à des syntaxes
+vagues ou complexe et à des règles de grammaires complexe.
+
+\subsection{Type de grammaires applicable}
+
+Les grammaires pour la méthode \verb|LL1| ne doivent pas avoir d’ambiguïté.
+Puisque la lecture est de gauche à droite, il ne doit pas avoir de
+récursivité du coté gauche mais juste du coté droite. De plus, les ensemble
+de premiers et de suivant doivent être disjointe. Les grammaires dites "LL1"
+sont utilisé pour la méthode \verb|LL1|. Il faut noter que les règles de
+productions peuvent juste être associatif à droite pour un analyseur \verb|LL1|
+puisque il ne serait pas possible de vérifier toute la règle avec un seul
+"lookahead token" pour de l'associativité à gauche.
+
+\subsection{Définition formelle de la syntaxe d’expressions arithmétiques}
+
+Cette section montre la grammaire construite pour être en mesure de résoudre
+des équations arithmétique n'ayant pas de nombre à virgule, pas de nombre
+négatif, des parenthèse et une priorité des opérations qui stipule que la
+division et la multiplication on la même priorité, mais plus prioritaire que
+et l'addition et la soustraction qui on la même priorité.
+
+Puisque la méthode doit être fait pour construire à gauche, les règles de
+productions récursives se remplace par la gauche. Puisque la méthode est
+descendante, la récursion doit se faire du moins prioritaire au plus
+prioritaire.
+
+\begin{align}
+E &\rightarrow \textrm{T | [ +E | -E ]} \\
+T &\rightarrow \textrm{P | [ *T | /T ]} \\
+P &\rightarrow \textrm{ ( E ) } \\
+P &\rightarrow \textrm{délimiteur | littéral }
+\end{align}
+
+\subsection{Exemples de séquences de dérivations}
+L'exemple suivant montre une séquence de dérivations d'une expression arithmétique à l'aide de la grammaire définie dans la section précédente:
+
+\begin{equation}
+  1+2*(3/5)-6
+\end{equation}
+
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+  \begin{enumerate}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \begin{multicols}{2}
+      \item $E$
+      \item $T+E$
+      \item $P+E$
+      \item $l+E$
+      \item $l+T$
+      \item $l+P*T$
+      \item $l+l*T$
+      \item $l+l*P$
+      \item $l+l*(E)$
+      \item $l+l*(T)$
+      \item $l+l*(P/T)$
+      \item $l+l*(l/T)$
+      \item $l+l*(l/P)$
+      \item $l+l*(l/l)$
+      \item $l+l*(l/lE$
+      \item $l+l*(l/lT-E$
+      \item $l+l*(l/lP-E$
+      \item $l+l*(l/l)-E$
+      \item $l+l*(l/l)-T$
+      \item $l+l*(l/l)-P$
+      \item $l+l*(l/l)-l$
+    \end{multicols}
+  \end{enumerate}
+\end{minipage}
+\end{center}
+
+Il faut comprendre que lorsqu'il n'est plus possible d'appliquer les règles
+de productions de la grammaire, et qu'il reste des unités lexical, le
+programme recommence avec le caractère actuel. C'est ainsi pourquoi un
+symbole $E$ apparaît à l'emplacement du délimiteur fermant. La fonction $P$
+c'est assuré qu'une parenthèse fermante était obtenue après l'appelle de $E$
+et c'est remonté tout en haut et repartie de ce point là.
+
+\subsection{Classe appliquant la MDR}
+\todo{this shit}

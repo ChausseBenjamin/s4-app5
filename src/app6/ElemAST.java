@@ -25,4 +25,16 @@ public abstract class ElemAST {
 
   public abstract String LectAST(int depth);
 
+  public String AsPostFix() {
+    StringBuilder b = new StringBuilder();
+    if (this instanceof NoeudAST e) { // spaces avoids "12 3" becoming "123"...
+      b.append(e.left.AsPostFix()).append(" ")
+       .append(e.right.AsPostFix()).append(" ")
+       .append(e.pivot.lexeme).append(" ");
+    } else if ( this instanceof FeuilleAST e) {
+      b.append(e.value.lexeme).append(" ");
+    }
+    return b.toString();
+  }
+
 }

@@ -1,6 +1,7 @@
 \documentclass[a11paper]{article}
 
-\usepackage{karnaugh-map}
+\usepackage[many]{tcolorbox}
+\usetikzlibrary{calc}
 \usepackage{subcaption}
 \usepackage{tabularx}
 \usepackage{titlepage}
@@ -19,6 +20,14 @@
 \usetikzlibrary{automata, positioning, arrows}
 % \usepackage[toc,page]{appendix}
 \usepackage[usenames,dvipsnames]{xcolor}
+
+
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
 \title{Rapport d'APP}
 
@@ -40,31 +49,29 @@
 
 
 \begin{document}
+{\footnotesize
 \maketitle
 \newpage
 \tableofcontents
 \listoffigures
 \listoftables
+}
 
 \newpage
 
-\section{Définition des unités lexicales}
-\todo{Décrire formellement des unités lexicales à l’aide d’expressions
-régulières et d’automates à états
-finis.}\\
+\newpage
+\input{01-lex-analysis.tex}
 
-\section{Description de la grammaire}
-\todo{Décrire formellement une syntaxe à l’aide d’une grammaire.} \\
+\newpage
+\input{02-ast.tex}
 
-\todo{Analyser et manipuler une grammaire.} \\
+\newpage
+\input{03-syntax-analysis.tex}
 
-\section{Analyseur lexical}
-\todo{Concevoir et réaliser un analyseur lexical.} \\
+\newpage
+\input{04-validation.tex}
 
-\section{Analyseur syntaxique}
-\todo{Concevoir et réaliser un analyseur syntaxique.} \\
-
-
+\newpage
 \input{05-appendix.tex}
 
 \end{document}
