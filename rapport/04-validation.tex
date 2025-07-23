@@ -1,53 +1,46 @@
 \section{Validation et tests}
 
-
 \begin{center} %% ANALYSE LEXICALE
   \footnotesize
-	\begin{longtable}{cp{4cm}p{4cm}p{5cm}}
-		% Headers & Footers {{{
-		\caption{Tests d'analyse lexicale} \label{tab:lex}
-		\\
-
-		\toprule
-		\multicolumn{3}{l}{Objectif Ciblé} &
-		Test des nouvelles opérations
-		\\
-
-		\midrule
+  \begin{longtable}{cp{4cm}p{4cm}p{5cm}}
+    % Headers & Footers {{{
+    \caption{Tests d'analyse lexicale} \label{tab:lex}
+    \\
+    \toprule
+    \multicolumn{3}{l}{Objectif Ciblé} &
+    Test des nouvelles opérations
+    \\
+    \midrule
     {\scriptsize \# Test}      &
-		\bfseries Entrée           &
-		\bfseries Résultat Attendu &
-		\bfseries Résultat Obtenu  \\
+    \bfseries Entrée           &
+    \bfseries Résultat Attendu &
+    \bfseries Résultat Obtenu  \\
+    \midrule
+    \endfirsthead
 
-		\midrule
-		\endfirsthead
-
-		\multicolumn{4}{c}%
-		{{\itshape \tablename\ \thetable{} -- Continué de la page précédente\ldots}}
-		\\
-
-		\midrule
+    \multicolumn{4}{c}%
+    {{\itshape \tablename\ \thetable{} -- Continué de la page précédente\ldots}}
+    \\
+    \midrule
     {\scriptsize \# Test}      &
-		\bfseries Entrée           &
-		\bfseries Résultat Attendu &
-		\bfseries Résultat Obtenu  \\
+    \bfseries Entrée           &
+    \bfseries Résultat Attendu &
+    \bfseries Résultat Obtenu  \\
+    \midrule
+    \endhead
 
-		\midrule
-		\endhead
+    \midrule \multicolumn{4}{r}{{Continué à la prochaine page}} \\
+    \midrule
+    \endfoot
 
-		\midrule \multicolumn{4}{r}{{Continué à la prochaine page}}
-		\\
-		\midrule
-		\endfoot
-
-		\bottomrule
-		\endlastfoot
-		% }}}
-		% Tests {{{
-		\tid  &
+    \bottomrule
+    \endlastfoot
+    % }}}
+    % Tests {{{
+    \tid  &
     \verb|(U_x + V_y ) * W_z / 35| &
-    Les unités sont présenté sur une ligne qui contient le type et le
-    contenue du lexème le résultat souhaité ici est:
+    Les unités sont présentées sur une ligne contenant le type et le contenu
+    du lexème. Le résultat attendu est :
     \begin{itemize}
       \item Délimiteur:     \verb|(|
       \item Identificateur: \verb|U_x|
@@ -59,90 +52,86 @@
       \item Opérateur:      \verb|/|
       \item Littéral:       \verb|35|
     \end{itemize} &
-    Le program répond à se critère avec une écriture un peu différente.
-    Cependant les données sont présentes et dans le bonne ordre. \\
+    Le programme répond à ce critère avec une présentation légèrement
+    différente. Toutefois, les données sont présentes et dans le bon ordre. \\
 
-		\tid  &
+    \tid  &
     \verb|(U_x + V_y ) * W__z / 35| &
-    Les mêmes unités que le premier test. Cependant une erreur est données
-    qui indique que des underscores consécutifs ont été trouvés. Les unités
-    affichés arrêtent à l’opérateur de multiplication. &
-    Le program à donnée une erreur et à retourner les unités lexical jusqu’à
+    Même unités que le premier test. Toutefois, une erreur est donnée,
+    indiquant que des underscores consécutifs ont été trouvés. Les unités
+    affichées s'arrêtent à l’opérateur de multiplication. &
+    Le programme a donné une erreur et a retourné les unités lexicales jusqu’à
     l’opérateur de multiplication. \\
 
-		\tid  &
+    \tid  &
     \verb|&| &
-    Une erreur de charactère invalide est donnée &
+    Une erreur de caractère invalide est attendue. &
     Le programme identifie le caractère invalide. \\
 
-		\tid  &
+    \tid  &
     \verb|aA_z| &
-    Une erreur est donnée qui indique qu’un identificateur ne peut pas
-    commencer par une minuscule. &
-    Une erreur d’identificateur est donnée qui dit qu’un identificateur ne
-    peut pas commencer par une lettre minuscule. \\
+    Une erreur est attendue indiquant qu’un identificateur ne peut pas
+    commencer par une lettre minuscule. &
+    Une erreur d’identificateur est donnée indiquant que le nom ne peut pas
+    commencer par une lettre minuscule. \\
 
-		\tid  &
+    \tid  &
     \verb|Aa_| &
-    Une erreur est donnée qui dit qu’un identificateur ne peut pas terminé
-    par un underscore &
-    Une erreur de fin d’identificateur à été donnée qui dit que ça peut pas
-    terminé par un underscore.  \\
+    Une erreur est attendue, indiquant qu’un identificateur ne peut pas se
+    terminer par un underscore. &
+    Une erreur de fin d’identificateur a été donnée, indiquant qu’il ne peut
+    pas se terminer par un underscore. \\
     % }}}
-	\end{longtable}
+  \end{longtable}
 \end{center}
 
 \begin{center} %% ANALYSE SYNTAXIQUE
   \footnotesize
-	\begin{longtable}{cp{4cm}p{4cm}p{5cm}}
-		% Headers & Footers {{{
-		\caption{Tests d'analyse syntaxique} \label{tab:syntax}
-		\\
-
-		\toprule
-		\multicolumn{3}{l}{Objectif Ciblé} &
-		Test des nouvelles opérations
-		\\
-
-		\midrule
+  \begin{longtable}{cp{4cm}p{4cm}p{5cm}}
+    % Headers & Footers {{{
+    \caption{Tests d'analyse syntaxique} \label{tab:syntax}
+    \\
+    \toprule
+    \multicolumn{3}{l}{Objectif Ciblé} &
+    Test des nouvelles opérations
+    \\
+    \midrule
     {\scriptsize \# Test}      &
-		\bfseries Entrée           &
-		\bfseries Résultat Attendu &
-		\bfseries Résultat Obtenu  \\
+    \bfseries Entrée           &
+    \bfseries Résultat Attendu &
+    \bfseries Résultat Obtenu  \\
+    \midrule
+    \endfirsthead
 
-		\midrule
-		\endfirsthead
-
-		\multicolumn{4}{c}%
-		{{\itshape \tablename\ \thetable{} -- Continué de la page précédente\ldots}}
-		\\
-
-		\midrule
+    \multicolumn{4}{c}%
+    {{\itshape \tablename\ \thetable{} -- Continué de la page précédente\ldots}}
+    \\
+    \midrule
     {\scriptsize \# Test}      &
-		\bfseries Entrée           &
-		\bfseries Résultat Attendu &
-		\bfseries Résultat Obtenu  \\
+    \bfseries Entrée           &
+    \bfseries Résultat Attendu &
+    \bfseries Résultat Obtenu  \\
+    \midrule
+    \endhead
 
-		\midrule
-		\endhead
+    \midrule \multicolumn{4}{r}{{Continué à la prochaine page}} \\
+    \midrule
+    \endfoot
 
-		\midrule \multicolumn{4}{r}{{Continué à la prochaine page}}
-		\\
-		\midrule
-		\endfoot
-
-		\bottomrule
-		\endlastfoot
-		% }}}
-		% Tests {{{
+    \bottomrule
+    \endlastfoot
+    % }}}
+    % Tests {{{
     \tidlabel{tid:start-op} &
     \verb| + 2 - 3| &
-    Une expression ne peut pas commencer par un opérateur. Une erreur devrait survenir. &
+    Une expression ne peut pas commencer par un opérateur. Une erreur devrait
+    survenir. &
     Voir l'erreur \ref{err:start-op} \\
 
     \tidlabel{tid:end-op}  &
     \verb| 2 - 3 *| &
-    Un opérateur est utilisé sans opérande droit. Une erreur devrait survenir. &
+    Un opérateur est utilisé sans opérande à droite. Une erreur devrait
+    survenir. &
     Voir l'erreur \ref{err:end-op} \\
 
     \tidlabel{tid:double-op}  &
@@ -152,100 +141,90 @@
 
     \tidlabel{tid:missing-close}  &
     \verb|(1 + 2 - 3| &
-    Un parenthèse ouverte n'a jamais été fermée. Une erreur devrait survenir. &
+    Une parenthèse ouverte n'a pas été fermée. Une erreur devrait survenir. &
     Voir l'erreur \ref{err:missing-close} \\
-
 
     \tidlabel{tid:missing-open}  &
     \verb|1 + 2) - 3| &
-    Un parenthèse ferme un alors qu'aucune parenthèse n'a été ouverte. Une
+    Une parenthèse fermante apparaît alors qu'aucune n’a été ouverte. Une
     erreur devrait survenir. &
     Voir l'erreur \ref{err:missing-open} \\
 
     \tidlabel{tid:empty-paren}  &
     \verb|1 + 2 - () / 3| &
-    Des parenthèses doivent contenir une expression valide. Une erreur
-    devrait survenir. &
+    Les parenthèses doivent contenir une expression valide. Une erreur devrait
+    survenir. &
     Voir l'erreur \ref{err:empty-paren} \\
-
     % }}}
-	\end{longtable}
+  \end{longtable}
 \end{center}
 
-Des test syntaxique avec une syntaxe valide n'ont pas été effectués puisque
-tout les test de construction d'AST les emploient (un prérequis pour ce type
-de test).
+Des tests syntaxiques avec une syntaxe valide n'ont pas été effectués puisque
+tous les tests de construction d'AST les emploient (pré-requis pour ce type de
+test).
 
 \begin{center} %% CONSTRUCTION AST
   \footnotesize
-	\begin{longtable}{cp{4cm}p{4cm}p{5cm}}
-		% Headers & Footers {{{
-		\caption{Tests de construction d'arbres syntaxiques abstraits} \label{tab:ast}
-		\\
-
-		\toprule
-		\multicolumn{3}{l}{Objectif Ciblé} &
-		Test des nouvelles opérations
-		\\
-
-		\midrule
+  \begin{longtable}{cp{4cm}p{4cm}p{5cm}}
+    % Headers & Footers {{{
+    \caption{Tests de construction d'arbres syntaxiques abstraits}
+    \label{tab:ast}
+    \\
+    \toprule
+    \multicolumn{3}{l}{Objectif Ciblé} &
+    Test des nouvelles opérations
+    \\
+    \midrule
     {\scriptsize \# Test}      &
-		\bfseries Entrée           &
-		\bfseries Résultat Attendu &
-		\bfseries Résultat Obtenu  \\
+    \bfseries Entrée           &
+    \bfseries Résultat Attendu &
+    \bfseries Résultat Obtenu  \\
+    \midrule
+    \endfirsthead
 
-		\midrule
-		\endfirsthead
-
-		\multicolumn{4}{c}%
-		{{\itshape \tablename\ \thetable{} -- Continué de la page précédente\ldots}}
-		\\
-
-		\midrule
+    \multicolumn{4}{c}%
+    {{\itshape \tablename\ \thetable{} -- Continué de la page précédente\ldots}}
+    \\
+    \midrule
     {\scriptsize \# Test}      &
-		\bfseries Entrée           &
-		\bfseries Résultat Attendu &
-		\bfseries Résultat Obtenu  \\
+    \bfseries Entrée           &
+    \bfseries Résultat Attendu &
+    \bfseries Résultat Obtenu  \\
+    \midrule
+    \endhead
 
-		\midrule
-		\endhead
+    \midrule \multicolumn{4}{r}{{Continué à la prochaine page}} \\
+    \midrule
+    \endfoot
 
-		\midrule \multicolumn{4}{r}{{Continué à la prochaine page}}
-		\\
-		\midrule
-		\endfoot
-
-		\bottomrule
-		\endlastfoot
-		% }}}
-		% Tests {{{
+    \bottomrule
+    \endlastfoot
+    % }}}
+    % Tests {{{
     \tidlabel{tid:first} &
     \verb|( U_x - V_y ) * W_z / 35| &
-    Si les parenthèse n'étaient pas présente, l'opérateur de soustraction se
-    retrouverait au sommet de l'arbre comme à la figure \ref{fig:ast-err}.
-    Ce test permet d'affirmer que la priorité d'opération est respectée et que
-    les parenthèes changent la structure de la pour obtenir ce qui est observé
-    à la figure \ref{fig:ast-first}. &
-    Représentation textuelle du json représenté à la figure \ref{fig:ast-first}.
-    Celle-ci confirme nos attentes \\
+    Sans les parenthèses, l'opérateur de soustraction serait au sommet de
+    l'arbre (voir figure \ref{fig:ast-err}). Ce test montre que la priorité des
+    opérations est respectée et que les parenthèses modifient bien la
+    structure pour obtenir ce qui est observé à la figure \ref{fig:ast-first}. &
+    Représentation textuelle du JSON illustré à la figure \ref{fig:ast-first}.
+    Elle confirme nos attentes. \\
 
     \tidlabel{tid:sum}  &
     \verb|1+2-3| &
-    Puisque la grammaire définie est associative à droite pour l'addition et
-    la soustraction, le terme au sommet de l'arbre devrait être la soustraction
-    qui se situe à droite. &
-    Représentation textuelle du json représenté à la figure \ref{fig:ast-sum}.
-    Celle-ci confirme nos attentes \\
+    Comme la grammaire est associative à droite pour l'addition et la
+    soustraction, l'opération au sommet de l'arbre doit être la soustraction,
+    placée à droite. &
+    Représentation textuelle du JSON illustré à la figure \ref{fig:ast-sum}.
+    Elle confirme nos attentes. \\
 
     \tidlabel{tid:prod} &
     \verb|1*2/3| &
-    Puisque la grammaire définie est associative à droite pour la multiplication
-    et la division, le terme au sommet de l'arbre devrait être la division qui
-    se situe à droite. &
-    Représentation textuelle du json représenté à la figure \ref{fig:ast-sum}.
-    Celle-ci confirme nos attentes \\
-
+    La grammaire étant associative à droite pour la multiplication et la
+    division, l'opération au sommet de l'arbre doit être la division, située
+    à droite. &
+    Représentation textuelle du JSON illustré à la figure \ref{fig:ast-sum}.
+    Elle confirme nos attentes. \\
     % }}}
-	\end{longtable}
+  \end{longtable}
 \end{center}
-

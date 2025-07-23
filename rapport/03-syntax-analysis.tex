@@ -1,93 +1,82 @@
 \section{Conception de l'analyseur syntaxique par la méthode descendante}
 
-\todo{Expliquer le principe de fonctionnement d’un analyseur descendant et d’un analyseur LL} \\
-\todo{Déterminer la catégorie d’analyseurs syntaxiques LL la plus utilisée en pratique} \\
-\todo{Déterminer le type de grammaires pour lesquelles la catégorie déterminée en b est applicable} \\
-\todo{Définir formellement la syntaxe d’expressions arithmétiques, à l’aide d’une grammaire du type} \\
-\todo{erminé en c} \\
-\todo{Illustrer sur des exemples les séquences de dérivations effectuées par un analyseur de la catégorie} \\
-\todo{erminée en b} \\
-\todo{Proposer une classe Java qui permet d’appliquer la méthode de la descente récursive (MDR)} \\
-
-\subsection{Principes de fonctionnements}
+\subsection{Principes de fonctionnement}
 
 \subsubsection{Analyseur descendant}
 
-Un analyseur syntaxique descendant vas construire l'\textit{AST} à partir
-d'un symbole de départ. Il vas dérivé l'entrée soit de gauche à droite ou de
-droite à gauche en appliquant des règles de grammaires. Ces derniers
-permettent de choisir le bon prochain symbole ou combinaison de symboles et
-peut utilisé une méthode qui implémente des "lookup tokens" pour
-déterminer les symboles suivant et être en mesure de choisir la bonne règle
-de production. Il vas essayé les différentes règles de productions jusqu'à ce
-que la chaîne d'entrée soit analysé ou qu'une erreur soit détecté.
+Un analyseur syntaxique descendant construit l'\textit{AST} à partir d'un
+symbole de départ. Il dérive l'entrée de gauche à droite ou de droite à
+gauche en appliquant des règles de grammaire. Ces règles permettent de choisir
+le bon prochain symbole ou la bonne combinaison de symboles. Une méthode peut
+implémenter des \textit{lookahead tokens} pour déterminer les symboles
+suivants et choisir la règle de production adéquate. L'analyseur essaie
+plusieurs règles de production jusqu'à ce que la chaîne d'entrée soit analysée
+ou qu'une erreur soit détectée.
 
 \subsection{Analyseur LL}
 
-Le premier L de la méthode LL indique que l'entrée est lu de gauche vers la
-droite. Le deuxième L indique que la séquence de dérivations est fait à
-gauche. Dans l'énoncer de la problématique, on indique d'utilisé LL(1). Le
-nombre en parenthèse est la quantité de "lookup token" que l'implémentation
-peut prendre. Dans le cas de l'implémentation de l'énoncer de la problématique,
-c'est 1. Ça veut dire que pour appliquer les règles de la grammaire, les
-fonctions ne peuvent que lire le caractère actuel et un seul suivant.
+Le premier L de la méthode LL indique que l'entrée est lue de gauche à droite.
+Le second L signifie que les dérivations sont effectuées à gauche. Dans
+l'énoncé de la problématique, on indique d'utiliser LL(1). Le nombre entre
+parenthèses indique la quantité de \textit{lookahead tokens} disponibles.
+Dans ce cas, un seul. Cela signifie que les fonctions d'analyse ne peuvent lire
+que le caractère actuel et un seul suivant.
 
-La méthode LL est une méthode prédictive. Elle vas essayé d'anticiper qu'elle
-règle utilisé et elle est aussi récursive dans ses appelles de règles de
-production.
+La méthode LL est prédictive. Elle anticipe la règle à utiliser et utilise des
+appels récursifs aux règles de production.
 
-L'analyseur vas commencer par la gauche de l'expression et par le symbole de
-départ. Ce dernier vas regarder le caractère suivant et s'il est capable de
-répondre à la règle avec ce dernier, il vas créé un noeud d'arbre avec deux
-symboles, sinon il vas simplement allé au prochain symbole. Plus loins dans
-le document, la grammaire utilisé démontre ce principe.
+L'analyseur commence à gauche de l'expression, avec le symbole de départ. Il
+regarde le caractère suivant, et s’il peut répondre à une règle avec ce
+caractère, il crée un nœud d'arbre avec deux symboles ; sinon, il passe au
+suivant. Plus loin dans ce document, la grammaire utilisée démontre ce
+principe.
 
 \subsection{Catégorie LL la plus utilisée en pratique}
 
-La méthode la plus utilisé en pratique est \verb|LL(1)|. Simplement dû à ça
-simplicité d'implémentation, souvent avec une descente récursive comme fait
-pour l'APP. Elle est suffisante pour de nombreux language de programmation
-robuste en syntax.
+La méthode la plus utilisée en pratique est \verb|LL(1)|. Cela s'explique par
+sa simplicité d'implémentation, souvent via une descente récursive comme
+celle de l'APP. Elle est suffisante pour de nombreux langages de
+programmation à la syntaxe robuste.
 
-Des méthodes beaucoup plus compliqué existent pour répondre à des syntaxes
-vagues ou complexe et à des règles de grammaires complexe.
+Des méthodes beaucoup plus complexes existent pour traiter des syntaxes
+ambiguës ou des grammaires complexes.
 
-\subsection{Type de grammaires applicable}
+\subsection{Type de grammaires applicables}
 
-Les grammaires pour la méthode \verb|LL1| ne doivent pas avoir d’ambiguïté.
-Puisque la lecture est de gauche à droite, il ne doit pas avoir de
-récursivité du coté gauche mais juste du coté droite. De plus, les ensemble
-de premiers et de suivant doivent être disjointe. Les grammaires dites "LL1"
-sont utilisé pour la méthode \verb|LL1|. Il faut noter que les règles de
-productions peuvent juste être associatif à droite pour un analyseur \verb|LL1|
-puisque il ne serait pas possible de vérifier toute la règle avec un seul
-"lookahead token" pour de l'associativité à gauche.
+Les grammaires pour la méthode \verb|LL(1)| ne doivent pas contenir
+d’ambiguïtés. Étant donné que la lecture est de gauche à droite, il ne doit
+pas y avoir de récursivité à gauche, seulement à droite. De plus, les ensembles
+de premiers et de suivants doivent être disjoints. Les grammaires dites
+``LL(1)'' sont utilisées pour cette méthode. Les règles de production doivent
+aussi être associatives à droite, car il n’est pas possible de vérifier
+l'ensemble de la règle avec un seul \textit{lookahead token} dans le cas
+d’une associativité à gauche.
 
 \subsection{Définition formelle de la syntaxe d’expressions arithmétiques}
 
-Cette section montre la grammaire construite pour être en mesure de résoudre
-des équations arithmétique n'ayant pas de nombre à virgule, pas de nombre
-négatif, des parenthèse et une priorité des opérations qui stipule que la
-division et la multiplication on la même priorité, mais plus prioritaire que
-et l'addition et la soustraction qui on la même priorité.
+Cette section présente la grammaire utilisée pour résoudre des équations
+arithmétiques sans nombres à virgule, sans nombres négatifs, avec parenthèses.
+La priorité des opérations stipule que la division et la multiplication ont
+la même priorité, supérieure à celle de l'addition et la soustraction.
 
-Puisque la méthode doit être fait pour construire à gauche, les règles de
-productions récursives se remplace par la gauche. Puisque la méthode est
-descendante, la récursion doit se faire du moins prioritaire au plus
-prioritaire.
+Comme la méthode doit construire à gauche, les règles de production récursives
+sont réécrites pour une récursivité à droite. La construction descendante
+nécessite une définition allant du moins prioritaire au plus prioritaire.
 
 \begin{align}
 E &\rightarrow \textrm{T | [ +E | -E ]} \\
 T &\rightarrow \textrm{P | [ *T | /T ]} \\
-P &\rightarrow \textrm{ ( E ) } \\
-P &\rightarrow \textrm{délimiteur | littéral }
+P &\rightarrow \textrm{( E )} \\
+P &\rightarrow \textrm{délimiteur | littéral}
 \end{align}
 
 \subsection{Exemples de séquences de dérivations}
-L'exemple suivant montre une séquence de dérivations d'une expression arithmétique à l'aide de la grammaire définie dans la section précédente:
+
+L'exemple suivant montre une séquence de dérivations d'une expression
+arithmétique à l'aide de la grammaire définie ci-dessus :
 
 \begin{equation}
-  1+2*(3/5)-6
+1+2*(3/5)-6
 \end{equation}
 
 \begin{center}
@@ -122,12 +111,9 @@ L'exemple suivant montre une séquence de dérivations d'une expression arithmé
 \end{minipage}
 \end{center}
 
-Il faut comprendre que lorsqu'il n'est plus possible d'appliquer les règles
-de productions de la grammaire, et qu'il reste des unités lexical, le
-programme recommence avec le caractère actuel. C'est ainsi pourquoi un
-symbole $E$ apparaît à l'emplacement du délimiteur fermant. La fonction $P$
-c'est assuré qu'une parenthèse fermante était obtenue après l'appelle de $E$
-et c'est remonté tout en haut et repartie de ce point là.
-
-\subsection{Classe appliquant la MDR}
-\todo{this shit}
+Lorsqu'il n'est plus possible d'appliquer les règles de production de la
+grammaire, et qu'il reste des unités lexicales, l'analyseur recommence à
+partir du caractère actuel. C’est pour cela qu’un symbole $E$ apparaît à la
+position de la parenthèse fermante. La fonction $P$ s’est assurée qu’une
+parenthèse fermante suivait l’appel de $E$, puis l'analyse est remontée et a
+repris à partir de ce point.
